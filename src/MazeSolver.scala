@@ -56,11 +56,11 @@ object MazeSolver{
 
   }
 
-  def dijkstra(maze: Maze): Maze = ???
+  def dijkstra(maze: Maze): List[(Int, Int)] = ???
 
-  def deepfirst(maze: Maze): Maze = ???
+  def deepfirst(maze: Maze): List[(Int, Int)] = ???
 
-  def wallfollower(maze: Maze): Maze = ???
+  def wallfollower(maze: Maze): List[(Int, Int)] = ???
 
 }
 
