@@ -155,7 +155,7 @@ object Graph {
 
     //all rows until the last one
     for(y <- 1 until hight -1){
-
+      //println("\nrow: " + y)
       var leftNode: Node = null
 
       var prv = false
@@ -163,7 +163,7 @@ object Graph {
       var nxt = maze(y)(1)
 
       for(x <- 1 until width - 1){
-
+        //println("col: " + x)
         prv = cur
         cur = nxt
         nxt = maze(y)(x+1)
@@ -204,7 +204,7 @@ object Graph {
             // Clear above, connect to waiting top node
             if (maze(y-1)(x)) {
               val t: Node = bufferTop(x)
-              t.neighbors(2) = Some(n)
+              t.neighbors(2) = node //Some(n)
               n.neighbors(1) = Some(t)
             }
             // If clear below, put this new node in the top row for the next connection
@@ -213,7 +213,7 @@ object Graph {
 
         }
       }
-
+    }
 
       //last row
       foundNode = false
@@ -223,15 +223,12 @@ object Graph {
         if(maze(hight-1)(i)){
           exit = Node((hight-1,i))
           val t = bufferTop(i)
-          println(i)
           t.neighbors(2) = Some(exit)
           exit.neighbors(1) = Some(t)
           foundNode = true
         }
         i += 1
       }
-
-    }
 
     new Graph(entry, exit, count, width, hight)
   }
