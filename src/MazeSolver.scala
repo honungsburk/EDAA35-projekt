@@ -60,8 +60,20 @@ object MazeSolver{
 
   def deepfirst(maze: Maze): List[(Int, Int)] = ???
 
-  def wallfollower(maze: Maze, start : (Int, Int), finish :(Int,Int)) : List[(Int,Int)] = {
+  def wallfollower(maze: Maze,  : List[(Int,Int)] = {
 		  var direction = (1, 0)
+	  	  val start : (Int, Int)
+	  	  val finish :(Int,Int))
+			  for(j <- maze(0).indices)
+			  {
+				  if(maze(0,j) == true) first = (i,j)	 
+			  }
+	  		  for(j <- maze(maze.length).indices)
+			  {
+				 if(maze(maze.length,j) == true) finish = (i,j) 
+			  }
+	  
+				  
     val coordBuffer = new scala.collection.mutable.ArrayBuffer[(Int,Int)] 
 		  var (x, y) = start;
 		  while((x,y) != finish)
