@@ -1,3 +1,4 @@
+package TimingMazes
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -37,11 +38,11 @@ object ImageReader {
   }
 
   def main(args: Array[String]): Unit = {
-    val file = new File("/h/d8/q/ast15tbl/Documents/Mazes/maze.png")
+    val file = new File("C:/Users/Tobbe/Desktop/maze10x10.png")
     val matrix = fromImage(file)
     for(y <- matrix.indices){
       for (x <- matrix(y).indices) {
-        print(s"${if (matrix(y)(x)) 1 else 0}")
+        print({if (matrix(y)(x)) 1 else 0})
       }
       println()
     }
