@@ -60,7 +60,60 @@ object MazeSolver{
 
   def deepfirst(maze: Maze): List[(Int, Int)] = ???
 
-  def wallfollower(maze: Maze): List[(Int, Int)] = ???
+  def wallfollower(maze: Maze, start : (Int, Int), finish :(Int,Int)) : List[(Int,Int)] = {
+		  var direction = (1, 0)
+    val coordBuffer = new scala.collection.mutable.ArrayBuffer[(Int,Int)] 
+		  var (x, y) = start;
+		  while((x,y) != finish)
+		  {
+		    move()
+     coordBuffer.append((x,y))
+		  } 
+		  coordBuffer.toList
+
+		  def readForward( maze: Vector[Vector[Boolean]]) : Boolean = {
+		    return maze(y + direction._2)(x + direction._1)
+		  }
+		    
+		  def walk() = {
+		    x += direction._1
+		    y += direction._2
+		  }
+		  
+		  def turnLeft(): (Int, Int) = 
+  		  direction match {
+  		  case Up => Left
+  		  case Left => Down
+  		  case Down => Right
+  		  case Right => Up
+  		}
+		  
+		  def turnRight() = 
+  		  direction match {
+  		  case Left => Up
+  		  case Up => Right
+  		  case Right => Down
+  		  case Down => Left
+  		}
+		  
+
+  		def move() = {
+  		  turnLeft()
+  		  if(!readForward(maze))
+  		  {
+  		    turnRight()
+  		    if(!readForward(maze))
+  		    {
+  		      turnRight()
+  		      if(!readForward(maze))
+  		      {
+  		        turnRight()
+  		      }
+  		    }
+  		  }
+  		  walk()
+  		}
+		}
 
 }
 
