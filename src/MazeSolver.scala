@@ -1,5 +1,7 @@
 package TimingMazes
 
+import java.io.File
+
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
 import scala.collection.mutable.PriorityQueue
@@ -7,116 +9,119 @@ import scala.collection.mutable.PriorityQueue
 /**
   * Created by ha8040we-s on 30/03/17.
   */
-object MazeSolver{
+object MazeSolver {
 
   type Maze = Vector[Vector[Boolean]]
 
   def astar(maze: Maze): List[(Int, Int)] = {
-      val graph = Graph(maze)
-      val lookedAtNodes = HashSet[Node]()
-      val weights = HashMap[Node, (Int, Int, Node)]() //weight, distance to end, node that leads to this node
-      val queue = PriorityQueue[(Int, Node)]((0, graph.start))(Ordering.by{e: (Int, Node) => -e._1})
-      var endLoop = false
+    val graph = Graph(maze)
+    val lookedAtNodes = HashSet[Node]()
+    val weights = HashMap[Node, (Int, Int, Node)]()
+    //weight, distance to end, node that leads to this node
+    val queue = PriorityQueue[(Int, Node)]((0, graph.start))(Ordering.by { e: (Int, Node) => -e._1 })
+    var endLoop = false
 
-      while(!queue.isEmpty && !endLoop){
-        val current = queue.dequeue()
-        lookedAtNodes += current._2
-        if(current._2 == graph.end)
-            endLoop = true //only exit point
-        else  
-          for (Some(neighbor) <- current._2.neighbors if !lookedAtNodes.contains(neighbor)) { //ignores nodes that we already found the shortest path to. aka already evaluated nodes
-            calcWeight(current._2, neighbor)
-          }
-        
+    while (!queue.isEmpty && !endLoop) {
+      val current = queue.dequeue()
+      lookedAtNodes += current._2
+      if (current._2 == graph.end)
+        endLoop = true //only exit point
+      else
+        for (Some(neighbor) <- current._2.neighbors if !lookedAtNodes.contains(neighbor)) {
+          //ignores nodes that we already found the shortest path to. aka already evaluated nodes
+          calcWeight(current._2, neighbor)
+        }
+
     } //last line
 
-      def calcWeight(from: Node, to: Node){
+    def calcWeight(from: Node, to: Node) {
       val dist = from.distanceTo(to)
-        weights.get(to) match {
-          case Some(n) =>
-                val weight = dist + n._2
-                if( weight < n._1){
-                weights += ((to,(weight ,n._2 ,from)))
-                queue += ((weight, to))
-                }
-          case None =>
-                val distToEnd = graph.end.distanceTo(to)
-                val weight = dist + distToEnd
-                weights += ((to,(weight,distToEnd ,from)))
-                queue += ((weight, to))
-        }
+      weights.get(to) match {
+        case Some(n) =>
+          val weight = dist + n._2
+          if (weight < n._1) {
+            weights += ((to, (weight, n._2, from)))
+            queue += ((weight, to))
+          }
+        case None =>
+          val distToEnd = graph.end.distanceTo(to)
+          val weight = dist + distToEnd
+          weights += ((to, (weight, distToEnd, from)))
+          queue += ((weight, to))
       }
+    }
 
     def reconstructPath(current: Node): List[(Int, Int)] = {
       current match {
-        case n @ graph.start => n.position :: List()
+        case n@graph.start => n.position :: List()
         case _ => current.position :: reconstructPath(weights(current)._3)
       }
     }
+
     reconstructPath(graph.end)
   }
 
   def dijkstra(maze: Maze): List[(Int, Int)] = ???
 
-  def deepfirst(maze: Maze): List[(Int, Int)] = ???
+  def depthFirst(maze: Maze): List[(Int, Int)] = {
+    ???
+  }
 
-  def wallfollower(maze: Maze, start : (Int, Int), finish :(Int,Int)) : List[(Int,Int)] = {
-		  var direction = (1, 0)
-    val coordBuffer = new scala.collection.mutable.ArrayBuffer[(Int,Int)] 
-		  var (x, y) = start;
-		  while((x,y) != finish)
-		  {
-		    move()
-     coordBuffer.append((x,y))
-		  } 
-		  coordBuffer.toList
+  def wallfollower(maze: Maze, start: (Int, Int), finish: (Int, Int)): List[(Int, Int)] = {
+    val Up = (0, -1)
+    val Down = (0, 1)
+    val Left = (1, 0)
+    val Right = (-1, 0)
+    var direction = Left
+    val coordBuffer = new scala.collection.mutable.ArrayBuffer[(Int, Int)]
+    var (x, y) = start
+    while ((x, y) != finish) {
+      move()
+      coordBuffer.append((x, y))
+    }
 
-		  def readForward( maze: Vector[Vector[Boolean]]) : Boolean = {
-		    return maze(y + direction._2)(x + direction._1)
-		  }
-		    
-		  def walk() = {
-		    x += direction._1
-		    y += direction._2
-		  }
-		  
-		  def turnLeft(): (Int, Int) = 
-  		  direction match {
-  		  case Up => Left
-  		  case Left => Down
-  		  case Down => Right
-  		  case Right => Up
-  		}
-		  
-		  def turnRight() = 
-  		  direction match {
-  		  case Left => Up
-  		  case Up => Right
-  		  case Right => Down
-  		  case Down => Left
-  		}
-		  
+    def readForward(maze: Vector[Vector[Boolean]]): Boolean = {
+      maze(y + direction._2)(x + direction._1)
+    }
 
-  		def move() = {
-  		  turnLeft()
-  		  if(!readForward(maze))
-  		  {
-  		    turnRight()
-  		    if(!readForward(maze))
-  		    {
-  		      turnRight()
-  		      if(!readForward(maze))
-  		      {
-  		        turnRight()
-  		      }
-  		    }
-  		  }
-  		  walk()
-  		}
-		}
+    def walk() = {
+      x += direction._1
+      y += direction._2
+    }
 
+    def turnLeft(): (Int, Int) = {
+      direction match {
+        case Up => Left
+        case Left => Down
+        case Down => Right
+        case Right => Up
+      }
+    }
+    def turnRight() = {
+      direction match {
+        case Left => Up
+        case Up => Right
+        case Right => Down
+        case Down => Left
+      }
+    }
+
+    def move() = {
+      turnLeft()
+      if (!readForward(maze)) {
+        turnRight()
+        if (!readForward(maze)) {
+          turnRight()
+          if (!readForward(maze)) {
+            turnRight()
+          }
+        }
+      }
+      walk()
+    }
+    coordBuffer.toList
+  }
 }
-
 
 case class Graph private (start: Node, end: Node, count: Int, width: Int, hight: Int)
 
@@ -241,17 +246,18 @@ object Graph {
 object Test {
   def main(args: Array[String]): Unit = {
 
-    val maze =  Vector(
+    /*val maze =  Vector(
       Vector(false , true, false, false, false),
       Vector(false , true, true, true, false),
       Vector(false , true, false, true, false),
       Vector(false , false, false, true, false)
-    )
+    )*/
+    val maze = ImageReader.fromImage(new File("C:/Users/Tobbe/Desktop/maze10x10.png"))
     val correctValues = Vector((0,1),(1,1),(2,1),(1,3),(3,3))
 
     val alreadyChecked = new HashSet[Node]()
-    val graph = Graph(maze)
-    println(goThroughGraph(graph.start))
+    //val graph = Graph(maze)
+    //println(goThroughGraph(graph.start))
     println("number of nodes: " + alreadyChecked.size)
 
     MazeSolver.astar(maze).foreach(println(_))

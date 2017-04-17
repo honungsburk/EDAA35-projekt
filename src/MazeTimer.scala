@@ -78,14 +78,14 @@ object MazeUtil {
       val alg = algoritm match {
         case "astar" => MazeSolver.astar _
         case "dijkstra" => MazeSolver.dijkstra _
-        case "deepfirst" => MazeSolver.deepfirst _
+        case "deepfirst" => MazeSolver.depthFirst _
         case "wallfollower" => MazeSolver.wallfollower _
         case _ => throw new IllegalArgumentException("Did not found a algorithm with the corresponding name: " + algoritm)
       }
 
       val maze = MazeUtil.readMazeFromFile(infil)
       
-      testAlgorithm(alg, maze, utfil, ggr)
+      //testAlgorithm(alg, maze, utfil, ggr)
 
     }
 
