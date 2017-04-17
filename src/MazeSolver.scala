@@ -2,9 +2,8 @@ package TimingMazes
 
 import java.io.File
 
-import scala.collection.mutable.HashMap
-import scala.collection.mutable.HashSet
-import scala.collection.mutable.PriorityQueue
+import scala.collection.mutable
+import scala.collection.mutable.{ArrayBuffer, HashMap, HashSet, PriorityQueue}
 
 /**
   * Created by ha8040we-s on 30/03/17.
@@ -64,7 +63,27 @@ object MazeSolver {
   def dijkstra(maze: Maze): List[(Int, Int)] = ???
 
   def depthFirst(maze: Maze): List[(Int, Int)] = {
-    ???
+    val graph = Graph(maze)
+    val stack : mutable.Stack[Node] = mutable.Stack()
+    search(graph.start)
+
+    def search(current: Node): Unit = {
+      //Lägg till nod i visited
+      stack.push(current)
+      //Om nod är mål:
+      if (current != graph.end) {
+        val neighbours = current.neighbors.filter(_.isDefined).map(_.get).filterNot(stack.contains(_))
+        if (neighbours.nonEmpty) {
+          for (n <- neighbours) {
+            search(n)
+          }
+        } else {
+          stack.pop()
+        }
+      }
+    }
+
+    stack.map(n => n.position).toList
   }
 
   def wallfollower(maze: Maze, start: (Int, Int), finish: (Int, Int)): List[(Int, Int)] = {
@@ -262,9 +281,9 @@ object Test {
 
     MazeSolver.astar(maze).foreach(println(_))
 
-  def goThroughGraph(node: Node): Boolean = {
+    def goThroughGraph(node: Node): Boolean = {
       alreadyChecked.add(node)
-    var result = true
+      var result = true
 
       for(n <- node.neighbors if result){
         n match {
@@ -279,8 +298,21 @@ object Test {
           case _ =>
         }
       }
-    result
+      result
     }
   }
 
+}
+
+object TestDFS {
+  def main(args: Array[String]): Unit = {
+    val maze =  Vector(
+    Vector(false , true, false, false, false),
+    Vector(false , true, true, true, false),
+    Vector(false , true, false, true, false),
+    Vector(false , false, false, true, false)
+    )
+
+    println(MazeSolver.depthFirst(maze))
+  }
 }
