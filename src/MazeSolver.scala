@@ -86,18 +86,29 @@ object MazeSolver {
     stack.map(n => n.position).toList
   }
 
-  def wallfollower(maze: Maze, start: (Int, Int), finish: (Int, Int)): List[(Int, Int)] = {
+  def wallfollower(maze: Maze): List[(Int, Int)] = {
     val Up = (0, -1)
     val Down = (0, 1)
     val Left = (1, 0)
     val Right = (-1, 0)
     var direction = Left
     val coordBuffer = new scala.collection.mutable.ArrayBuffer[(Int, Int)]
-    var (x, y) = start
+   
+     val start : (Int, Int)
+	  	  val finish :(Int,Int))
+			  for(j <- maze(0).indices)
+			  {
+				  if(maze(0)(j) == true) first = (0,j)	 
+			  }
+	  		  for(j <- maze(maze.length).indices)
+			  {
+				 if(maze(maze.length)(j) == true) finish = (maze.length,j) 
+     }
     while ((x, y) != finish) {
       move()
       coordBuffer.append((x, y))
     }
+   
 
     def readForward(maze: Vector[Vector[Boolean]]): Boolean = {
       maze(y + direction._2)(x + direction._1)
